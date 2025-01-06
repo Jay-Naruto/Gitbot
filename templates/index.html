@@ -4,131 +4,289 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GitBot UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 2em auto;
-        max-width: 600px;
-        line-height: 1.6;
+      .globe {
+        animation: rotate 20s linear infinite;
       }
-      h1 {
-        text-align: center;
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
       }
-      .form-group {
-        margin-bottom: 1em;
+
+      .background-animate {
+        background-size: 400%;
+        -webkit-animation: AnimateBackground 10s ease infinite;
+        -moz-animation: AnimateBackground 10s ease infinite;
+        animation: AnimateBackground 10s ease infinite;
       }
-      label {
-        display: block;
-        margin-bottom: 0.5em;
+
+      @keyframes AnimateBackground {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
       }
-      input,
-      button {
-        width: 100%;
-        padding: 0.5em;
-        margin-bottom: 1em;
+
+      .glow {
+        animation: glow 3s ease-in-out infinite alternate;
       }
-      button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #0056b3;
-      }
-      .output {
-        margin-top: 1em;
-        padding: 1em;
-        background-color: #f1f1f1;
-        border-radius: 5px;
-      }
-      #command-form {
-        display: none;
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 0 20px -10px #1d4ed8;
+        }
+        to {
+          box-shadow: 0 0 30px 5px #1d4ed8;
+        }
       }
     </style>
   </head>
-  <body>
-    <h1>GitBot</h1>
-    <form id="setup-form">
-      <div class="form-group">
-        <label for="repo-path">GitHub Repository Path</label>
-        <input type="text" id="repo-path" name="repo_path" required />
+  <body class="min-h-screen">
+    <div
+      class="relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-blue-900 background-animate"
+    >
+      <!-- Animated background elements -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute w-full h-full">
+          <svg width="100%" height="100%">
+            <defs>
+              <pattern
+                id="dots"
+                x="0"
+                y="0"
+                width="20"
+                height="20"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle cx="1" cy="1" r="1" fill="rgba(59, 130, 246, 0.2)" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#dots)" />
+          </svg>
+        </div>
       </div>
-      <button type="submit">Set Up Repository</button>
-    </form>
 
-    <form id="command-form">
-      <div class="form-group">
-        <label for="command">Enter Git Command in English</label>
-        <input type="text" id="command" name="command" required />
+      <div class="container mx-auto px-4 py-8 max-w-2xl relative">
+        <!-- Header with Enhanced Globe -->
+        <div class="flex flex-col items-center justify-center mb-12 pt-8">
+          <div class="relative mb-8">
+            <div
+              class="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-20 animate-pulse"
+            ></div>
+            <svg
+              class="globe w-24 h-24 text-blue-500 relative glow"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="M3.6001 9H20.4001"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <path
+                d="M3.6001 15H20.4001"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <path
+                d="M12 3C14.0683 5.20839 15.2075 8.03273 15.2075 11C15.2075 13.9673 14.0683 16.7916 12 19"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="M12 3C9.93174 5.20839 8.79248 8.03273 8.79248 11C8.79248 13.9673 9.93174 16.7916 12 19"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+          <h1 class="text-4xl font-bold text-white mb-2">GitBot</h1>
+          <p class="text-blue-200 text-center max-w-md">
+            Your AI-powered Git assistant
+          </p>
+        </div>
+
+        <!-- Setup Form -->
+        <div
+          class="bg-gray-900/50 backdrop-blur-lg rounded-lg shadow-lg p-6 mb-6 border border-gray-800"
+        >
+          <form id="setup-form" class="space-y-4">
+            <div class="space-y-2">
+              <label
+                for="repo-path"
+                class="block text-sm font-medium text-gray-300"
+              >
+                GitHub Repository Path
+              </label>
+              <input
+                type="text"
+                id="repo-path"
+                name="repo_path"
+                required
+                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-500"
+                placeholder="username/repository"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Set Up Repository
+            </button>
+          </form>
+        </div>
+
+        <!-- Command Form -->
+        <div
+          class="bg-gray-900/50 backdrop-blur-lg rounded-lg shadow-lg p-6 mb-6 border border-gray-800"
+          id="command-form"
+          style="display: none"
+        >
+          <form id="command-form-el" class="space-y-4">
+            <div class="space-y-2">
+              <label
+                for="command"
+                class="block text-sm font-medium text-gray-300"
+              >
+                Enter Git Command in English
+              </label>
+              <input
+                type="text"
+                id="command"
+                name="command"
+                required
+                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-500"
+                placeholder="e.g., create a new branch called feature"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Submit Command
+            </button>
+          </form>
+        </div>
+
+        <!-- Output Section -->
+        <div
+          id="output"
+          class="bg-gray-800/50 backdrop-blur-lg rounded-lg p-4 mb-6 text-gray-300 hidden border border-gray-700"
+        ></div>
+
+        <!-- Steps Container -->
+        <div id="steps-container" class="space-y-4">
+          <!-- Steps will be dynamically added here -->
+        </div>
       </div>
-      <button type="submit">Submit Command</button>
-    </form>
-
-    <div class="output" id="output"></div>
-
-    <div id="steps-container"></div>
+    </div>
 
     <script>
-      const setupForm = document.getElementById("setup-form");
-      const commandForm = document.getElementById("command-form");
-      const outputDiv = document.getElementById("output");
-      const stepsContainer = document.getElementById("steps-container");
+      // Declare outputDiv globally
+      let outputDiv;
 
-      // Handle Setup Form Submission
-      setupForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const formData = new FormData(setupForm);
-        const response = await fetch("/setup", {
-          method: "POST",
-          body: formData,
-        });
-        const result = await response.json();
-        if (response.ok) {
-          outputDiv.textContent = result.message;
-          setupForm.style.display = "none"; // Hide setup form
-          commandForm.style.display = "block"; // Show command form
-        } else {
-          outputDiv.textContent = result.error;
+      document.addEventListener("DOMContentLoaded", function () {
+        const setupForm = document.getElementById("setup-form");
+        const commandForm = document.getElementById("command-form");
+        outputDiv = document.getElementById("output"); // Now it's accessible globally
+        const stepsContainer = document.getElementById("steps-container");
+
+        console.log(commandForm); // Check if the element is correctly selected
+
+        if (!setupForm) {
+          console.error("Setup form not found");
+          return;
         }
-      });
 
-      // Handle Command Form Submission
-      commandForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const formData = new FormData(commandForm);
-        const response = await fetch("/execute", {
-          method: "POST",
-          body: formData,
-        });
-        const result = await response.json();
-
-        if (response.ok) {
-          // Clear previous steps
-          stepsContainer.innerHTML = "";
-
-          // Check if result.commands exists and is an array
-          if (Array.isArray(result.commands)) {
-            result.commands.forEach((step, index) => {
-              let commandElement = document.createElement("div");
-              commandElement.innerHTML = `
-                            <p>${step.command}</p>
-                            <button onclick="executeCommand(${index})">Execute</button>
-                        `;
-              stepsContainer.appendChild(commandElement);
-            });
+        // Handle Setup Form Submission
+        setupForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(setupForm);
+          const response = await fetch("/setup", {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+          if (response.ok) {
+            outputDiv.textContent = result.message;
+            outputDiv.classList.remove("hidden");
+            setupForm.parentElement.style.display = "none";
+            commandForm.style.display = "block";
           } else {
-            outputDiv.textContent = "No valid commands returned.";
+            outputDiv.textContent = result.error;
+            outputDiv.classList.remove("hidden");
           }
-        } else {
-          outputDiv.textContent = result.error || "An error occurred.";
-        }
+        });
+
+        // Handle Command Form Submission
+        const commandFormElement = document.getElementById("command-form-el");
+
+        commandFormElement.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(commandFormElement);
+          const response = await fetch("/execute", {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+
+          if (response.ok) {
+            stepsContainer.innerHTML = "";
+
+            if (Array.isArray(result.commands)) {
+              result.commands.forEach((step, index) => {
+                const commandElement = document.createElement("div");
+                commandElement.className =
+                  "bg-gray-900/50 backdrop-blur-lg rounded-lg shadow-lg p-4 border border-gray-800";
+                commandElement.innerHTML = `
+            <div class="flex items-center justify-between">
+                <p class="font-mono text-sm bg-gray-800/50 p-2 rounded flex-1 mr-4 text-gray-300">${step.command}</p>
+                <button
+                    onclick="executeCommand(${index})"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                >
+                    Execute
+                </button>
+            </div>
+          `;
+                stepsContainer.appendChild(commandElement);
+              });
+            } else {
+              outputDiv.textContent = "No valid commands returned.";
+              outputDiv.classList.remove("hidden");
+            }
+          } else {
+            outputDiv.textContent = result.error || "An error occurred.";
+            outputDiv.classList.remove("hidden");
+          }
+        });
       });
 
       // Execute a command step
       async function executeCommand(index) {
         const response = await fetch("/execute_step", {
           method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
           body: new URLSearchParams({
             step_command: document
               .querySelectorAll("#steps-container div")
@@ -136,7 +294,8 @@
           }),
         });
         const result = await response.json();
-        outputDiv.innerHTML = `<strong>Output:</strong> ${result.output}`;
+        outputDiv.innerHTML = `<strong class="font-medium text-gray-200">Output:</strong> <span class="font-mono text-gray-300">${result.output}</span>`;
+        outputDiv.classList.remove("hidden");
       }
     </script>
   </body>
