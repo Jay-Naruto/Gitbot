@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitBot - Commands</title>
+</head>
+<body>
+    <h1>GitBot - Commands for Task</h1>
+
+    <form action="/execute_command" method="post">
+        <input type="hidden" name="repo_path" value="{{ repo_path }}">
+        
+        {% for command in commands %}
+            <div>
+                <p>Command: {{ command }}</p>
+                {% if "git commit" in command %}
+                    <label for="commit_message">Commit Message:</label><br>
+                    <input type="text" id="commit_message" name="commit_message" required><br><br>
+                {% endif %}
+                <button type="submit" name="command" value="{{ command }}">Execute</button>
+            </div>
+            <br>
+        {% endfor %}
+
+        {% if result %}
+            <h2>Result:</h2>
+            <pre>{{ result }}</pre>
+        {% endif %}
+    </form>
+
+    <a href="/">Go Back</a>
+</body>
+</html>

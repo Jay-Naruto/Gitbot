@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitBot UI</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2em auto;
+        max-width: 600px;
+        line-height: 1.6;
+      }
+      h1 {
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 1em;
+      }
+      label {
+        display: block;
+        margin-bottom: 0.5em;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 0.5em;
+        margin-bottom: 1em;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .output {
+        margin-top: 1em;
+        padding: 1em;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+      }
+      #command-form {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GitBot</h1>
+    <form id="setup-form">
+      <div class="form-group">
+        <label for="repo-path">GitHub Repository Path</label>
+        <input type="text" id="repo-path" name="repo_path" required />
+      </div>
+      <button type="submit">Set Up Repository</button>
+    </form>
+
+    <form id="command-form">
+      <div class="form-group">
+        <label for="command">Enter Git Command in English</label>
+        <input type="text" id="command" name="command" required />
+      </div>
+      <button type="submit">Submit Command</button>
+    </form>
+
+    <div class="output" id="output"></div>
+
+    <div id="steps-container"></div>
+
+    <script>
+      const setupForm = document.getElementById("setup-form");
+      const commandForm = document.getElementById("command-form");
+      const outputDiv = document.getElementById("output");
+      const stepsContainer = document.getElementById("steps-container");
+
+      // Handle Setup Form Submission
+      setupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(setupForm);
+        const response = await fetch("/setup", {
+          method: "POST",
+          body: formData,
+        });
+        const result = await response.json();
+        if (response.ok) {
+          outputDiv.textContent = result.message;
+          setupForm.style.display = "none"; // Hide setup form
+          commandForm.style.display = "block"; // Show command form
+        } else {
+          outputDiv.textContent = result.error;
+        }
+      });
+
+      // Handle Command Form Submission
+      commandForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(commandForm);
+        const response = await fetch("/execute", {
+          method: "POST",
+          body: formData,
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          // Clear previous steps
+          stepsContainer.innerHTML = "";
+
+          // Check if result.commands exists and is an array
+          if (Array.isArray(result.commands)) {
+            result.commands.forEach((step, index) => {
+              let commandElement = document.createElement("div");
+              commandElement.innerHTML = `
+                            <p>${step.command}</p>
+                            <button onclick="executeCommand(${index})">Execute</button>
+                        `;
+              stepsContainer.appendChild(commandElement);
+            });
+          } else {
+            outputDiv.textContent = "No valid commands returned.";
+          }
+        } else {
+          outputDiv.textContent = result.error || "An error occurred.";
+        }
+      });
+
+      // Execute a command step
+      async function executeCommand(index) {
+        const response = await fetch("/execute_step", {
+          method: "POST",
+          body: new URLSearchParams({
+            step_command: document
+              .querySelectorAll("#steps-container div")
+              [index].querySelector("p").textContent,
+          }),
+        });
+        const result = await response.json();
+        outputDiv.innerHTML = `<strong>Output:</strong> ${result.output}`;
+      }
+    </script>
+  </body>
+</html>
